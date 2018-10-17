@@ -17,7 +17,7 @@ Source code of our EMNLP 2018 paper: [SyntaxSQLNet: Syntax Tree Networks for Com
     - ``generated_data`` for original Spider training datasets, pretrained models can be found at `generated_data/saved_models`
     - ``generated_data_augment`` for original Spider + augmented training datasets, pretrained models can be found at `generated_data_augment/saved_models`
 
-#### Generating Training Data for Modules
+#### Generating Train/dev Data for Modules
 You could find preprocessed train/dev data in ``generated_datasets/``.
 
 To generate them by yourself, update dirs under `TODO` in `preprocess_train_dev_data.py`, and run the following command to generate training files for each module:
