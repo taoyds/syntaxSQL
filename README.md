@@ -22,7 +22,7 @@ You could find preprocessed train/dev data in ``generated_datasets/``.
 
 To generate them by yourself, update dirs under `TODO` in `preprocess_train_dev_data.py`, and run the following command to generate training files for each module:
 ```
-python3 preprocess_train_dev_data.py train|dev
+python preprocess_train_dev_data.py train|dev
 ```
 
 #### Folder/File Description
