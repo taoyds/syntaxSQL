@@ -3,6 +3,18 @@
 Source code of our EMNLP 2018 paper: [SyntaxSQLNet: Syntax Tree Networks for Complex and Cross-DomainText-to-SQL Task
 ](https://arxiv.org/abs/1810.05237).
 
+### Citation
+
+```
+@InProceedings{Yu&al.18.emnlp.syntax,
+  author =  {Tao Yu and Michihiro Yasunaga and Kai Yang and Rui Zhang and Dongxu Wang and Zifan Li and Dragomir Radev},
+  title =   {SyntaxSQLNet: Syntax Tree Networks for Complex and Cross-Domain Text-to-SQL Task},
+  year =    {2018},  
+  booktitle =   {Proceedings of EMNLP},  
+  publisher =   {Association for Computational Linguistics},
+}
+```
+
 #### Environment Setup
 
 1. The code uses Python 2.7 and [Pytorch 0.2.0](https://pytorch.org/previous-versions/) GPU.
@@ -68,3 +80,7 @@ Follow the general evaluation process in [the Spider github page](https://github
 You could find preprocessed augmented data at `generated_datasets/generated_data_augment`. 
 
 If you would like to run data augmentation by yourself, first download `wikisql_tables.json` and `train_patterns.json` from [here](https://drive.google.com/file/d/1DZCITYsy9oXjayY1I2e4Wk1nfxUa_oiG/view?usp=sharing), and then run ```python generate_wikisql_augment.py``` to generate more training data.
+
+#### Acknowledgement
+
+The implementation is based on [SQLNet](https://github.com/xiaojunxu/SQLNet). Please cite it too if you use this code.
