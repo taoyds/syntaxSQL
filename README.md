@@ -79,7 +79,7 @@ Follow the general evaluation process in [the Spider github page](https://github
 #### Cross-Domain Data Augmentation
 You could find preprocessed augmented data at `generated_datasets/generated_data_augment`. 
 
-If you would like to run data augmentation by yourself, first download `wikisql_tables.json` and `train_patterns.json` from [here](https://drive.google.com/file/d/1DZCITYsy9oXjayY1I2e4Wk1nfxUa_oiG/view?usp=sharing), and then run ```python generate_wikisql_augment.py``` to generate more training data.
+If you would like to run data augmentation by yourself, first download `wikisql_tables.json` and `train_patterns.json` from [here](https://drive.google.com/file/d/1DZCITYsy9oXjayY1I2e4Wk1nfxUa_oiG/view?usp=sharing), and then run ```python generate_wikisql_augment.py``` to generate more training data. Second, run `get_data_wikisql.py` to generate WikiSQL augment json file. Finally, use `merge_jsons.py` to generate the final spider + wikisql + wikisql augment dataset.
 
 #### Acknowledgement
 
