@@ -1,4 +1,4 @@
-## SyntaxSQLNet: Syntax Tree Networks for Complex and Cross-DomainText-to-SQL Task
+## SyntaxSQLNet: Syntax Tree Networks for Complex and Cross-Domain Text-to-SQL Task
 
 Source code of our EMNLP 2018 paper: [SyntaxSQLNet: Syntax Tree Networks for Complex and Cross-DomainText-to-SQL Task
 ](https://arxiv.org/abs/1810.05237).
