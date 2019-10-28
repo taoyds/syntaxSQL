@@ -155,7 +155,6 @@ def parse_file_and_sql(filepath, schema, db_id):
 	    sql = [line]
 	    i += 1
 	    while i < len(lines):
-		line = lines[i]
 		line = lines[i].lstrip().rstrip()
 		line = line.replace("\r","")
 		line = line.replace("\n","")
