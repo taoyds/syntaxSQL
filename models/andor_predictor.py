@@ -14,11 +14,11 @@ class AndOrPredictor(nn.Module):
         self.gpu = gpu
         self.use_hs = use_hs
 
-        self.q_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.q_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
-        self.hs_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.hs_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
@@ -28,7 +28,7 @@ class AndOrPredictor(nn.Module):
         self.ao_out_hs = nn.Linear(N_h, N_h)
         self.ao_out = nn.Sequential(nn.Tanh(), nn.Linear(N_h, 2)) #for and/or
 
-        self.softmax = nn.Softmax() #dim=1
+        self.softmax = nn.Softmax(dim=1) #dim=1
         self.CE = nn.CrossEntropyLoss()
         self.log_softmax = nn.LogSoftmax()
         self.mlsml = nn.MultiLabelSoftMarginLoss()
@@ -47,7 +47,10 @@ class AndOrPredictor(nn.Module):
 
         att_np_q = np.ones((B, max_q_len))
         att_val_q = torch.from_numpy(att_np_q).float()
-        att_val_q = Variable(att_val_q.cuda())
+        if self.gpu:
+            att_val_q = Variable(att_val_q.cuda())
+        else:
+            att_val_q = Variable(att_val_q)
         for idx, num in enumerate(q_len):
             if num < max_q_len:
                 att_val_q[idx, num:] = -100
@@ -57,7 +60,10 @@ class AndOrPredictor(nn.Module):
         # Same as the above, compute SQL history embedding weighted by column attentions
         att_np_h = np.ones((B, max_hs_len))
         att_val_h = torch.from_numpy(att_np_h).float()
-        att_val_h = Variable(att_val_h.cuda())
+        if self.gpu:
+            att_val_h = Variable(att_val_h.cuda())
+        else:
+            att_val_h = Variable(att_val_h)
         for idx, num in enumerate(hs_len):
             if num < max_hs_len:
                 att_val_h[idx, num:] = -100
@@ -72,7 +78,11 @@ class AndOrPredictor(nn.Module):
     def loss(self, score, truth):
         loss = 0
         data = torch.from_numpy(np.array(truth))
-        truth_var = Variable(data.cuda())
+        data = torch._cast_Long(data)
+        if self.gpu:
+            truth_var = Variable(data.cuda())
+        else:
+            truth_var = Variable(data)
         loss = self.CE(score, truth_var)
 
         return loss
