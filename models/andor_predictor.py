@@ -28,7 +28,7 @@ class AndOrPredictor(nn.Module):
         self.ao_out_hs = nn.Linear(N_h, N_h)
         self.ao_out = nn.Sequential(nn.Tanh(), nn.Linear(N_h, 2)) #for and/or
 
-        self.softmax = nn.Softmax() #dim=1
+        self.softmax = nn.Softmax(dim=1) #dim=1
         self.CE = nn.CrossEntropyLoss()
         self.log_softmax = nn.LogSoftmax()
         self.mlsml = nn.MultiLabelSoftMarginLoss()
@@ -78,7 +78,11 @@ class AndOrPredictor(nn.Module):
     def loss(self, score, truth):
         loss = 0
         data = torch.from_numpy(np.array(truth))
-        truth_var = Variable(data.cuda())
+        data = torch._cast_Long(data)
+        if self.gpu:
+            truth_var = Variable(data.cuda())
+        else:
+            truth_var = Variable(data)
         loss = self.CE(score, truth_var)
 
         return loss
