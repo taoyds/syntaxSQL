@@ -95,6 +95,7 @@ class MultiSqlPredictor(nn.Module):
             truth_var = Variable(data.cuda())
         else:
             truth_var = Variable(data)
+        truth_var = torch._cast_Long(truth_var)    
         loss = self.CE(score, truth_var)
 
         return loss
