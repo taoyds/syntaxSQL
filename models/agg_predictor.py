@@ -113,7 +113,10 @@ class AggPredictor(nn.Module):
         #loss for the column number
         truth_num = [len(t) for t in truth] # double check truth format and for test cases
         data = torch.from_numpy(np.array(truth_num))
-        truth_num_var = Variable(data.cuda())
+        if self.gpu:
+            truth_num_var = Variable(data.cuda())
+        else:
+            truth_num_var = Variable(data)
         loss += self.CE(agg_num_score, truth_num_var)
         #loss for the key words
         T = len(agg_score[0])
@@ -121,7 +124,10 @@ class AggPredictor(nn.Module):
         for b in range(B):
             truth_prob[b][truth[b]] = 1
         data = torch.from_numpy(truth_prob)
-        truth_var = Variable(data.cuda())
+        if self.gpu:
+            truth_var = Variable(data.cuda())
+        else:
+            truth_var = Variable(data)
         #loss += self.mlsml(agg_score, truth_var)
         #loss += self.bce_logit(agg_score, truth_var) # double check no sigmoid
         pred_prob = self.sigm(agg_score)
