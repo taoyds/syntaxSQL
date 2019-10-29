@@ -14,15 +14,15 @@ class HavingPredictor(nn.Module):
         self.gpu = gpu
         self.use_hs = use_hs
 
-        self.q_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.q_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
-        self.hs_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.hs_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
-        self.col_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.col_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
@@ -81,7 +81,10 @@ class HavingPredictor(nn.Module):
     def loss(self, score, truth):
         loss = 0
         data = torch.from_numpy(np.array(truth))
-        truth_var = Variable(data.cuda())
+        if self.gpu:
+            truth_var = Variable(data.cuda())
+        else:
+            truth_var = Variable(data)
         loss = self.CE(score, truth_var)
 
         return loss
