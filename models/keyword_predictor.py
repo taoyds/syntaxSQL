@@ -41,7 +41,7 @@ class KeyWordPredictor(nn.Module):
         self.kw_out_kw = nn.Linear(N_h, N_h)
         self.kw_out = nn.Sequential(nn.Tanh(), nn.Linear(N_h, 1))
 
-        self.softmax = nn.Softmax() #dim=1
+        self.softmax = nn.Softmax(dim=1) #dim=1
         self.CE = nn.CrossEntropyLoss()
         self.log_softmax = nn.LogSoftmax()
         self.mlsml = nn.MultiLabelSoftMarginLoss()
