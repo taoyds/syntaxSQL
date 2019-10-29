@@ -39,7 +39,7 @@ class ColPredictor(nn.Module):
         self.col_out_hs = nn.Linear(N_h, N_h)
         self.col_out = nn.Sequential(nn.Tanh(), nn.Linear(N_h, 1))
 
-        self.softmax = nn.Softmax() #dim=1
+        self.softmax = nn.Softmax(dim=1) #dim=1
         self.CE = nn.CrossEntropyLoss()
         self.log_softmax = nn.LogSoftmax()
         self.mlsml = nn.MultiLabelSoftMarginLoss()
