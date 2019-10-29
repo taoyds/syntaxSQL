@@ -33,7 +33,7 @@ class RootTeminalPredictor(nn.Module):
         self.rt_out_c = nn.Linear(N_h, N_h)
         self.rt_out = nn.Sequential(nn.Tanh(), nn.Linear(N_h, 2)) #for 2 operators
 
-        self.softmax = nn.Softmax() #dim=1
+        self.softmax = nn.Softmax(dim=1) #dim=1
         self.CE = nn.CrossEntropyLoss()
         self.log_softmax = nn.LogSoftmax()
         self.mlsml = nn.MultiLabelSoftMarginLoss()
