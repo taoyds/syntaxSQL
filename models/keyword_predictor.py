@@ -110,6 +110,7 @@ class KeyWordPredictor(nn.Module):
         #loss for the key word number
         truth_num = [len(t) for t in truth] # double check to exclude select
         data = torch.from_numpy(np.array(truth_num))
+        data = torch._cast_Long(data)
         if self.gpu:
             truth_num_var = Variable(data.cuda())
         else:
