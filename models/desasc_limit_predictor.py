@@ -34,7 +34,7 @@ class DesAscLimitPredictor(nn.Module):
         self.dat_out_c = nn.Linear(N_h, N_h)
         self.dat_out = nn.Sequential(nn.Tanh(), nn.Linear(N_h, 4)) #for 4 desc/asc limit/none combinations
 
-        self.softmax = nn.Softmax() #dim=1
+        self.softmax = nn.Softmax(dim=1) #dim=1
         self.CE = nn.CrossEntropyLoss()
         self.log_softmax = nn.LogSoftmax()
         self.mlsml = nn.MultiLabelSoftMarginLoss()
@@ -83,6 +83,7 @@ class DesAscLimitPredictor(nn.Module):
     def loss(self, score, truth):
         loss = 0
         data = torch.from_numpy(np.array(truth))
+        data = torch._cast_Long(data)
         if self.gpu:
             truth_var = Variable(data.cuda())
         else:    
