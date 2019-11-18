@@ -14,15 +14,15 @@ class OpPredictor(nn.Module):
         self.gpu = gpu
         self.use_hs = use_hs
 
-        self.q_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.q_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
-        self.hs_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.hs_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
-        self.col_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.col_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
@@ -40,7 +40,7 @@ class OpPredictor(nn.Module):
         self.op_out_c = nn.Linear(N_h, N_h)
         self.op_out = nn.Sequential(nn.Tanh(), nn.Linear(N_h, 11)) #for 11 operators
 
-        self.softmax = nn.Softmax() #dim=1
+        self.softmax = nn.Softmax(dim=1) #dim=1
         self.CE = nn.CrossEntropyLoss()
         self.log_softmax = nn.LogSoftmax()
         self.mlsml = nn.MultiLabelSoftMarginLoss()
@@ -126,7 +126,10 @@ class OpPredictor(nn.Module):
         # loss for the op number
         truth_num = [len(t)-1 for t in truth] #num_score 0 maps to 1 in truth
         data = torch.from_numpy(np.array(truth_num))
-        truth_num_var = Variable(data.cuda())
+        if self.gpu:
+            truth_num_var = Variable(data.cuda())
+        else:
+            truth_num_var = Variable(data)
         loss += self.CE(op_num_score, truth_num_var)
         # loss for op
         T = len(op_score[0])
@@ -134,7 +137,10 @@ class OpPredictor(nn.Module):
         for b in range(B):
             truth_prob[b][truth[b]] = 1
         data = torch.from_numpy(np.array(truth_prob))
-        truth_var = Variable(data.cuda())
+        if self.gpu:
+            truth_var = Variable(data.cuda())
+        else:
+            truth_var = Variable(data)
         #loss += self.mlsml(op_score, truth_var)
         #loss += self.bce_logit(op_score, truth_var)
         pred_prob = self.sigm(op_score)
