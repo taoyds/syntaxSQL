@@ -3,6 +3,8 @@
 Source code of our EMNLP 2018 paper: [SyntaxSQLNet: Syntax Tree Networks for Complex and Cross-DomainText-to-SQL Task
 ](https://arxiv.org/abs/1810.05237).
 
+:+1: `03/20/2022`: **We open-sourced a simple but SOTA model (just T5) for 20 tasks including text-to-SQL! Please check out our code in the [UnifiedSKG repo](https://github.com/hkunlp/unifiedskg)!!**
+
 ### Citation
 
 ```
