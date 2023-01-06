@@ -14,15 +14,15 @@ class RootTeminalPredictor(nn.Module):
         self.gpu = gpu
         self.use_hs = use_hs
 
-        self.q_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.q_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
-        self.hs_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.hs_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
-        self.col_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.col_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
@@ -33,7 +33,7 @@ class RootTeminalPredictor(nn.Module):
         self.rt_out_c = nn.Linear(N_h, N_h)
         self.rt_out = nn.Sequential(nn.Tanh(), nn.Linear(N_h, 2)) #for 2 operators
 
-        self.softmax = nn.Softmax() #dim=1
+        self.softmax = nn.Softmax(dim=1) #dim=1
         self.CE = nn.CrossEntropyLoss()
         self.log_softmax = nn.LogSoftmax()
         self.mlsml = nn.MultiLabelSoftMarginLoss()
@@ -81,7 +81,10 @@ class RootTeminalPredictor(nn.Module):
     def loss(self, score, truth):
         loss = 0
         data = torch.from_numpy(np.array(truth))
-        truth_var = Variable(data.cuda())
+        if self.gpu:
+            truth_var = Variable(data.cuda())
+        else:
+            truth_var = Variable(data)
         loss = self.CE(score, truth_var)
 
         return loss
