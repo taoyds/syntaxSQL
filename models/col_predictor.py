@@ -14,15 +14,15 @@ class ColPredictor(nn.Module):
         self.gpu = gpu
         self.use_hs = use_hs
 
-        self.q_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.q_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
-        self.hs_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.hs_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
-        self.col_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.col_lstm = nn.LSTM(input_size=N_word, hidden_size=int(N_h/2),
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
 
@@ -39,7 +39,7 @@ class ColPredictor(nn.Module):
         self.col_out_hs = nn.Linear(N_h, N_h)
         self.col_out = nn.Sequential(nn.Tanh(), nn.Linear(N_h, 1))
 
-        self.softmax = nn.Softmax() #dim=1
+        self.softmax = nn.Softmax(dim=1) #dim=1
         self.CE = nn.CrossEntropyLoss()
         self.log_softmax = nn.LogSoftmax()
         self.mlsml = nn.MultiLabelSoftMarginLoss()
@@ -122,7 +122,11 @@ class ColPredictor(nn.Module):
         #loss for the column number
         truth_num = [len(t) - 1 for t in truth] # double check truth format and for test cases
         data = torch.from_numpy(np.array(truth_num))
-        truth_num_var = Variable(data.cuda())
+        data = torch._cast_Long(data)
+        if self.gpu:
+            truth_num_var = Variable(data.cuda())
+        else:
+            truth_num_var = Variable(data)
         loss += self.CE(col_num_score, truth_num_var)
         #loss for the key words
         T = len(col_score[0])
@@ -139,7 +143,10 @@ class ColPredictor(nn.Module):
         data = torch.from_numpy(truth_prob)
         # print("data {}".format(data))
         # print("data {}".format(data.cuda()))
-        truth_var = Variable(data.cuda())
+        if self.gpu:
+            truth_var = Variable(data.cuda())
+        else:
+            truth_var = Variable(data)
         #loss += self.mlsml(col_score, truth_var)
         #loss += self.bce_logit(col_score, truth_var) # double check no sigmoid
         pred_prob = self.sigm(col_score)
